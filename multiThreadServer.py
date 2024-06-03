@@ -14,7 +14,7 @@ udp_lock = allocate_lock()
 
 
 def tcpClientThread(connection, address):
-    connection.send(str.encode("Sunucuya bağlandınız."))
+    # connection.send(str.encode("Sunucuya bağlandınız."))
     userName = None
     try:
         while True:
@@ -40,7 +40,7 @@ def tcpClientThread(connection, address):
                     errorMessage = "4740_invalid_srNm"
                     connection.sendall(errorMessage.encode("utf-8"))
             else:
-                print(f"{userName}[TCP]: {message}")
+                print(f"{userName} [TCP]: {message}")
                 sendMessage = f"{userName} [TCP]: {message}"
                 with tcp_lock:
                     for client_info in tcp_clients:
@@ -58,7 +58,7 @@ def tcpClientThread(connection, address):
                     tcp_clients.remove(client)
                     break
         if userName:
-            print(f"{userName} [TCP] sohbetten ayrıldı.", address)
+            print(f"{userName} [TCP] sohbetten ayrıldı.")
         connection.close()
 
 
@@ -67,7 +67,6 @@ def udpServerThread(udpSocket):
         try:
             data, address = udpSocket.recvfrom(BUFFER_SIZE)
             message = data.decode("utf-8")
-
             if message.split(":")[0] == "userName":
                 message_parts = message.split(":")
                 new_user_name = message_parts[1]
@@ -96,7 +95,7 @@ def udpServerThread(udpSocket):
                 udpSocket.sendto(message.encode("utf-8"), address)
             else:
                 userName = next((client["userName"] for client in udp_clients if client["address"] == address), "Bilinmiyor")
-                print(f"{userName}[UDP]: {message}")
+                print(f"{userName} [UDP]: {message}")
                 sendMessage = f"{userName}[UDP]: {message}"
                 with tcp_lock:
                     for client_info in tcp_clients:
@@ -134,14 +133,13 @@ def main():
 
     start_new_thread(udpServerThread, (udp_socket,))
     
-    threadCount = 0
+    
     while True:
         try:
             client, address = tcpServerSocket.accept()
             print(f"{address[0]}, {str(address[1])}'a bağlandı.")
             start_new_thread(tcpClientThread, (client, address))
-            threadCount += 1
-            print(f"Thread Sayısı: {str(threadCount)}")
+            
         except Exception as e:
             print(f"Error accepting connections: {e}")
             break

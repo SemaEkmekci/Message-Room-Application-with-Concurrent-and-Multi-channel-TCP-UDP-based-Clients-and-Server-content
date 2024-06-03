@@ -24,6 +24,7 @@ def receiveMessage(clientSocket):
             elif(data.decode("utf-8") == "2150_lv_clnt"):
                 clientSocket.close()
             else:
+                # print("\n")
                 print(str(data.decode("utf-8")))
         except:
             break
@@ -41,7 +42,8 @@ def main():
                 sendUserName = "userName:"+ userName 
                 clientSocket.sendto(sendUserName.encode("utf-8"), addr)
             else:
-                msg = input("Mesaj Giriniz: ")
+                msg = input("")
+                # print("\n")
                 clientSocket.sendto(msg.encode("utf-8"), addr)
     except KeyboardInterrupt:
         exit()
